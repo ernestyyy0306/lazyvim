@@ -16,19 +16,19 @@ function M.create_cspell_json_if_not_exist()
   "globRoot": ".",
   "dictionaryDefinitions": [
     {
-      "name": "cspell-tool",
-      "path": "./cspell-tool.txt",
+      "name": "dictionary",
+      "path": "./dictionary.txt",
       "addWords": true
     }
   ],
   "dictionaries": [
-    "cspell-tool"
+    "dictionary"
   ],
   "ignorePaths": [
     "node_modules",
     "dist",
     "build",
-    "/cspell-tool.txt"
+    "/dictionary.txt"
   ]
 }
 ]]
@@ -51,7 +51,7 @@ function M.add_word_to_c_spell_dictionary()
   end
 
   M.create_cspell_json_if_not_exist()
-  local dictionary_path = Path.get_root_directory() .. "/cspell-tool.txt"
+  local dictionary_path = Path.get_root_directory() .. "/dictionary.txt"
 
   -- Append the word to the dictionary file
   local file = io.open(dictionary_path, "a")

@@ -13,3 +13,6 @@ keymap("n", "<leader>cb", "<cmd>lua require('utils.cspell').add_word_to_c_spell_
   silent = true,
   desc = "Add Word to Dictionary",
 })
+
+keymap("i", "<C-c>", "<Esc>", { noremap = true, silent = true, desc = "Use <C-c> as <Esc>" })
+keymap("n", "<C-c>", "<Esc>", { noremap = true, silent = true, desc = "Use <C-c> as <Esc>" })

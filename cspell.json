@@ -5,18 +5,18 @@
   "globRoot": ".",
   "dictionaryDefinitions": [
     {
-      "name": "cspell-tool",
-      "path": "./cspell-tool.txt",
+      "name": "dictionary",
+      "path": "./dictionary.txt",
       "addWords": true
     }
   ],
   "dictionaries": [
-    "cspell-tool"
+    "dictionary"
   ],
   "ignorePaths": [
     "node_modules",
     "dist",
     "build",
-    "/cspell-tool.txt"
+    "/dictionary.txt"
   ]
 }

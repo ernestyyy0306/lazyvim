@@ -3,9 +3,16 @@
     "lazyvim.plugins.extras.ai.copilot",
     "lazyvim.plugins.extras.ai.copilot-chat",
     "lazyvim.plugins.extras.coding.luasnip",
+    "lazyvim.plugins.extras.coding.mini-surround",
+    "lazyvim.plugins.extras.coding.nvim-cmp",
+    "lazyvim.plugins.extras.editor.mini-files",
+    "lazyvim.plugins.extras.lang.docker",
     "lazyvim.plugins.extras.lang.json",
     "lazyvim.plugins.extras.lang.markdown",
-    "lazyvim.plugins.extras.lang.toml"
+    "lazyvim.plugins.extras.lang.python",
+    "lazyvim.plugins.extras.lang.toml",
+    "lazyvim.plugins.extras.lang.yaml",
+    "lazyvim.plugins.extras.ui.mini-animate"
   ],
   "install_version": 8,
   "news": {
