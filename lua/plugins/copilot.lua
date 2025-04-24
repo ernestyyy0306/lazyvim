@@ -4,8 +4,10 @@ return {
     suggestion = {
       enabled = true,
       auto_trigger = true,
+      debounce = 75,
       keymap = {
-        accept = "<Tab>",
+        accept = "<Tab>", -- 👈 Accept with Tab
+        accept_line = false,
         next = "<M-]>",
         prev = "<M-[>",
         dismiss = "<C-]>",
@@ -15,7 +17,6 @@ return {
   config = function(_, opts)
     require("copilot").setup(opts)
 
-    -- Tab behavior: fallback when no Copilot suggestion
     vim.keymap.set("i", "<Tab>", function()
       local copilot = require("copilot.suggestion")
       if copilot.is_visible() then
