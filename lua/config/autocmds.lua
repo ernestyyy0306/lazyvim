@@ -6,3 +6,15 @@
 --
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
+
+local buffer_triggered = false
+
+vim.api.nvim_create_autocmd({ "SessionLoadPost", "BufReadPost" }, {
+  callback = function()
+    if buffer_triggered then
+      return
+    end
+    vim.cmd("Neotree")
+    buffer_triggered = true
+  end,
+})

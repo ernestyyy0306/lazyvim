@@ -2,7 +2,6 @@ return {
   "neovim/nvim-lspconfig",
   -- other settings removed for brevity
   opts = {
-    ---@type lspconfig.options
     servers = {
       eslint = {
         settings = {
@@ -19,7 +18,7 @@ return {
         settings = {
           vtsls = {
             autoUseWorkspaceTsdk = false,
-            tsdk = vim.fn.expand("/Users/ernestyap/.nvm/versions/node/v22.14.0/lib"),
+            tsdk = vim.fn.expand("~/.nvm/versions/node/v22.14.0/lib"),
           },
         },
       },

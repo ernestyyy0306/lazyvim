@@ -1,3 +1,11 @@
 lazyvim
 nvim
 keymap
+nvim_create_autocmd
+Neotree
+autocmds
+nvim_del_augroup_by_name
+keymaps
+noremap
+lspconfig
+enew

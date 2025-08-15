@@ -10,13 +10,6 @@
       "addWords": true
     }
   ],
-  "dictionaries": [
-    "dictionary"
-  ],
-  "ignorePaths": [
-    "node_modules",
-    "dist",
-    "build",
-    "/dictionary.txt"
-  ]
+  "dictionaries": ["dictionary"],
+  "ignorePaths": ["node_modules", "dist", "build", "/dictionary.txt"]
 }
