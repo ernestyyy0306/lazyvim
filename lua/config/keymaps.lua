@@ -36,3 +36,7 @@ end, { desc = "Buffer: set filetype" })
 
 -- Escape with <C-c>
 keymap({ "i", "n", "v" }, "<C-c>", "<Esc>", { noremap = true, silent = true, desc = "Use <C-c> as <Esc>" })
+
+-- UFO Folding
+keymap("n", "zR", require("ufo").openAllFolds)
+keymap("n", "zM", require("ufo").closeAllFolds)
