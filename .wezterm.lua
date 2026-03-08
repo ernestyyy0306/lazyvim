@@ -47,6 +47,11 @@ local config = {
       }),
     },
     {
+      key = "s",
+      mods = "CMD",
+      action = wezterm.action.SendKey({ key = "s", mods = "CTRL" }),
+    },
+    {
       key = "w",
       mods = "CMD",
       action = act_cb(function(window, pane)
@@ -59,16 +64,6 @@ local config = {
           window:perform_action(act.CloseCurrentTab({ confirm = true }), pane)
         end
       end),
-    },
-    {
-      key = "s",
-      mods = "CMD",
-      action = act_cb(function(window, pane)
-        if is_nvim(pane) then
-          return window:perform_action(act.SendString("\x1b\x13\n"), pane)
-        end
-      end),
-      -- This will create a new split and run the `top` program inside it
     },
     {
       key = "d",
