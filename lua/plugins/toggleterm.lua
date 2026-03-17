@@ -1,12 +1,24 @@
 return {
   {
     "akinsho/toggleterm.nvim",
-    config = true,
     cmd = "ToggleTerm",
-    keys = { { "<C-\\>", "<cmd>ToggleTerm<cr>", desc = "Toggle floating terminal" } },
+    keys = {
+      {
+        "<C-.>",
+        "<cmd>2ToggleTerm direction=vertical<cr>",
+        desc = "Toggle terminal split vertical",
+        mode = { "n", "t" },
+      },
+      { "<esc><esc>", [[<C-\><C-n>]], mode = "t", desc = "Go to normal mode" },
+    },
     opts = {
-      open_mapping = [[<C-\>]],
-      direction = "float",
+      size = function(term)
+        if term.direction == "horizontal" then
+          return math.floor(vim.o.lines * 0.33)
+        elseif term.direction == "vertical" then
+          return math.floor(vim.o.columns * 0.33)
+        end
+      end,
       shade_filetypes = {},
       hide_numbers = true,
       insert_mappings = true,
