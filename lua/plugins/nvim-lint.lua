@@ -1,7 +1,4 @@
--- Run linter manual per buffer
--- @param name The name of the linter to run.
 local function run_linter_by(name)
-  -- Refer for more details https://github.com/mfussenegger/nvim-lint/issues/22#issuecomment-841415438
   require("lint").try_lint(name)
   local bufnr = vim.api.nvim_get_current_buf()
   vim.cmd(string.format("augroup au_%s_lint_%d", name, bufnr))
@@ -21,16 +18,12 @@ return {
     },
     keys = {
       {
-        -- Run lint by name
         "<leader>rl",
         function()
           local items = {
-            -- Github actions
-            "actionlint", -- go install github.com/rhysd/actionlint/cmd/actionlint@latest
-            -- .env files
-            "dotenv_linter", -- brew install dotenv-linter
-            -- Markdown and writing
-            "write_good", -- npm install -g write-good
+            "actionlint",
+            "dotenv_linter",
+            "write_good",
           }
 
           vim.ui.select(items, {
@@ -43,13 +36,11 @@ return {
         end,
         desc = "Run Nvim Lint",
       },
-      -- Fix .env variables
       {
         "<leader>fv",
         function()
-          local file = vim.fn.fnameescape(vim.fn.expand("%:p")) -- Escape file path for shell
+          local file = vim.fn.fnameescape(vim.fn.expand("%:p"))
 
-          -- Warn user if file is not .env
           if not string.match(file, "%.env") then
             vim.notify("This is not a .env file", vim.log.levels.WARN)
             return
