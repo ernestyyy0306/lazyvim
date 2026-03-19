@@ -40,3 +40,13 @@ keymap({ "i", "n", "v" }, "<C-c>", "<Esc>", { noremap = true, silent = true, des
 -- UFO Folding
 keymap("n", "zR", require("ufo").openAllFolds)
 keymap("n", "zM", require("ufo").closeAllFolds)
+
+-- Clear scrollback WITHOUT killing the shell process
+keymap("t", "<C-k>", function()
+  vim.api.nvim_chan_send(vim.b.terminal_job_id, "clear && printf '\\033[3J'")
+  local old_scrollback = vim.opt_local.scrollback:get()
+  vim.opt_local.scrollback = 1
+  vim.defer_fn(function()
+    vim.opt_local.scrollback = old_scrollback
+  end, 10)
+end, { desc = "Clear Terminal Memory (Keep Process)" })
