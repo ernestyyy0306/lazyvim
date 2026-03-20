@@ -1,5 +1,33 @@
+local Dashboard = require("utils.dashboard")
+
 return {
   "folke/snacks.nvim",
+  init = function()
+    vim.api.nvim_create_autocmd("VimEnter", {
+      callback = function()
+        local is_git_commit = vim.fn.argv(0):match("COMMIT_EDITMSG")
+
+        if not is_git_commit then
+          vim.schedule(function()
+            -- open explorer
+            require("snacks").explorer()
+            Dashboard.focus_snacks_dashboard()
+
+            -- refocus dashboard
+            for _, win in ipairs(vim.api.nvim_list_wins()) do
+              local buf = vim.api.nvim_win_get_buf(win)
+              local ft = vim.api.nvim_get_option_value("filetype", { buf = buf })
+
+              if ft == "snacks_dashboard" then
+                vim.api.nvim_set_current_win(win)
+                break
+              end
+            end
+          end)
+        end
+      end,
+    })
+  end,
   opts = {
     dashboard = {
       preset = {
@@ -10,7 +38,7 @@ return {
        ██║     ██╔══██║ ███╔╝    ╚██╔╝  ╚██╗ ██╔╝██║██║╚██╔╝██║           
        ███████╗██║  ██║███████╗   ██║    ╚████╔╝ ██║██║ ╚═╝ ██║           
        ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝     ╚═══╝  ╚═╝╚═╝     ╚═╝   EY      
-]],
+        ]],
       },
       sections = {
         { section = "header" },
@@ -35,12 +63,11 @@ return {
         "ios",
         "venv",
       },
-      hidden = true,
-      ignored = true,
       sources = {
         files = {
           hidden = true,
           ignored = true,
+          regex = false,
           exclude = {
             "**/.git/*",
             "**/node_modules/*",
@@ -52,6 +79,238 @@ return {
             "**/ios/*",
             "**/.expo/*",
             "**/venv/*",
+          },
+          layout = {
+            fullscreen = true,
+            { preview = true },
+            layout = {
+              box = "horizontal",
+              width = 0.8,
+              height = 0.8,
+              {
+                box = "vertical",
+                border = "rounded",
+                title = "{source} {live} {flags}",
+                title_pos = "center",
+                { win = "input", height = 1, border = "bottom" },
+                { win = "list", border = "none" },
+              },
+              { win = "preview", border = "rounded", width = 0.7, title = "{preview}" },
+            },
+          },
+        },
+        grep = {
+          hidden = true,
+          ignored = true,
+          regex = false,
+          layout = {
+            fullscreen = true,
+            { preview = true },
+            layout = {
+              box = "horizontal",
+              width = 0.8,
+              height = 0.8,
+              {
+                box = "vertical",
+                border = "rounded",
+                title = "{source} {live} {flags}",
+                title_pos = "center",
+                { win = "input", height = 1, border = "bottom" },
+                { win = "list", border = "none" },
+              },
+              { win = "preview", border = "rounded", width = 0.7, title = "{preview}" },
+            },
+          },
+        },
+        explorer = {
+          hidden = true,
+          ignored = true,
+          regex = false,
+          win = {
+            list = {
+              keys = {
+                ["<Esc>"] = false,
+                ["<BS>"] = "explorer_up",
+                ["l"] = "confirm",
+                ["h"] = "explorer_close", -- close directory
+                ["a"] = "explorer_add",
+                ["d"] = "explorer_del",
+                ["r"] = "explorer_rename",
+                ["c"] = "explorer_copy",
+                ["m"] = "explorer_move",
+                ["o"] = "explorer_open", -- open with system application
+                ["P"] = "toggle_preview",
+                ["y"] = { "explorer_yank", mode = { "n", "x" } },
+                ["p"] = "explorer_paste",
+                ["u"] = "explorer_update",
+                ["<c-c>"] = "tcd",
+                ["<leader>/"] = "picker_grep",
+                ["<c-t>"] = "terminal",
+                ["."] = "explorer_focus",
+                ["I"] = "toggle_ignored",
+                ["H"] = "toggle_hidden",
+                ["Z"] = "explorer_close_all",
+                ["]g"] = "explorer_git_next",
+                ["[g"] = "explorer_git_prev",
+                ["]d"] = "explorer_diagnostic_next",
+                ["[d"] = "explorer_diagnostic_prev",
+                ["]w"] = "explorer_warn_next",
+                ["[w"] = "explorer_warn_prev",
+                ["]e"] = "explorer_error_next",
+                ["[e"] = "explorer_error_prev",
+              },
+            },
+          },
+          layout = { preset = "sidebar", preview = false },
+        },
+      },
+      formatters = {
+        text = {
+          ft = nil, ---@type string? filetype for highlighting
+        },
+        file = {
+          filename_first = false, -- display filename before the file path
+          --- * left: truncate the beginning of the path
+          --- * center: truncate the middle of the path
+          --- * right: truncate the end of the path
+          ---@type "left"|"center"|"right"
+          truncate = "left",
+          min_width = 80, -- minimum length of the truncated path
+          filename_only = false, -- only show the filename
+          icon_width = 2, -- width of the icon (in characters)
+          git_status_hl = true, -- use the git status highlight group for the filename
+        },
+        selected = {
+          show_always = false, -- only show the selected column when there are multiple selections
+          unselected = true, -- use the unselected icon for unselected items
+        },
+        severity = {
+          icons = true, -- show severity icons
+          level = false, -- show severity level
+          ---@type "left"|"right"
+          pos = "left", -- position of the diagnostics
+        },
+      },
+      win = {
+        -- input window
+        input = {
+          keys = {
+            -- to close the picker on ESC instead of going to normal mode,
+            -- add the following keymap to your config
+            ["<Esc>"] = { "close", mode = { "n", "i" } },
+            ["/"] = "toggle_focus",
+            ["<C-Down>"] = { "history_forward", mode = { "i", "n" } },
+            ["<C-Up>"] = { "history_back", mode = { "i", "n" } },
+            ["<C-c>"] = { "cancel", mode = "i" },
+            ["<C-w>"] = { "<c-s-w>", mode = { "i" }, expr = true, desc = "delete word" },
+            ["<CR>"] = { "confirm", mode = { "n", "i" } },
+            ["<Down>"] = { "list_down", mode = { "i", "n" } },
+            ["<S-CR>"] = { { "pick_win", "jump" }, mode = { "n", "i" } },
+            ["<S-Tab>"] = { "select_and_prev", mode = { "i", "n" } },
+            ["<Tab>"] = { "select_and_next", mode = { "i", "n" } },
+            ["<Up>"] = { "list_up", mode = { "i", "n" } },
+            ["<a-d>"] = { "inspect", mode = { "n", "i" } },
+            ["<a-f>"] = { "toggle_follow", mode = { "i", "n" } },
+            ["<a-h>"] = { "toggle_hidden", mode = { "i", "n" } },
+            ["<a-i>"] = { "toggle_ignored", mode = { "i", "n" } },
+            ["<a-r>"] = { "toggle_regex", mode = { "i", "n" } },
+            ["<a-m>"] = { "toggle_maximize", mode = { "i", "n" } },
+            ["<a-p>"] = { "toggle_preview", mode = { "i", "n" } },
+            ["<a-w>"] = { "cycle_win", mode = { "i", "n" } },
+            ["<c-a>"] = { "select_all", mode = { "n", "i" } },
+            ["<c-u>"] = { "preview_scroll_up", mode = { "i", "n" } },
+            ["<c-d>"] = { "preview_scroll_down", mode = { "i", "n" } },
+            ["<c-g>"] = { "toggle_live", mode = { "i", "n" } },
+            ["<c-j>"] = { "list_down", mode = { "i", "n" } },
+            ["<c-k>"] = { "list_up", mode = { "i", "n" } },
+            ["<c-n>"] = { "list_down", mode = { "i", "n" } },
+            ["<c-p>"] = { "list_up", mode = { "i", "n" } },
+            ["<c-q>"] = { "qflist", mode = { "i", "n" } },
+            ["<c-s>"] = { "edit_split", mode = { "i", "n" } },
+            ["<c-t>"] = { "tab", mode = { "n", "i" } },
+            ["<c-v>"] = { "edit_vsplit", mode = { "i", "n" } },
+            ["<c-r>#"] = { "insert_alt", mode = "i" },
+            ["<c-r>%"] = { "insert_filename", mode = "i" },
+            ["<c-r><c-a>"] = { "insert_cWORD", mode = "i" },
+            ["<c-r><c-f>"] = { "insert_file", mode = "i" },
+            ["<c-r><c-l>"] = { "insert_line", mode = "i" },
+            ["<c-r><c-p>"] = { "insert_file_full", mode = "i" },
+            ["<c-r><c-w>"] = { "insert_cword", mode = "i" },
+            ["<c-w>H"] = "layout_left",
+            ["<c-w>J"] = "layout_bottom",
+            ["<c-w>K"] = "layout_top",
+            ["<c-w>L"] = "layout_right",
+            ["?"] = "toggle_help_input",
+            ["G"] = "list_bottom",
+            ["gg"] = "list_top",
+            ["j"] = "list_down",
+            ["k"] = "list_up",
+            ["q"] = "cancel",
+          },
+          b = {
+            minipairs_disable = true,
+          },
+        },
+        -- result list window
+        list = {
+          keys = {
+            ["/"] = "toggle_focus",
+            ["<2-LeftMouse>"] = "confirm",
+            ["<CR>"] = "confirm",
+            ["<Down>"] = "list_down",
+            ["<Esc>"] = "cancel",
+            ["<S-CR>"] = { { "pick_win", "jump" } },
+            ["<S-Tab>"] = { "select_and_prev", mode = { "n", "x" } },
+            ["<Tab>"] = { "select_and_next", mode = { "n", "x" } },
+            ["<Up>"] = "list_up",
+            ["<a-d>"] = "inspect",
+            ["<a-f>"] = "toggle_follow",
+            ["<a-h>"] = "toggle_hidden",
+            ["<a-i>"] = "toggle_ignored",
+            ["<a-m>"] = "toggle_maximize",
+            ["<a-p>"] = "toggle_preview",
+            ["<a-w>"] = "cycle_win",
+            ["<c-a>"] = "select_all",
+            ["<c-b>"] = "preview_scroll_up",
+            ["<c-d>"] = "list_scroll_down",
+            ["<c-f>"] = "preview_scroll_down",
+            ["<c-j>"] = "list_down",
+            ["<c-k>"] = "list_up",
+            ["<c-n>"] = "list_down",
+            ["<c-p>"] = "list_up",
+            ["<c-q>"] = "qflist",
+            ["<c-g>"] = "print_path",
+            ["<c-s>"] = "edit_split",
+            ["<c-t>"] = "tab",
+            ["<c-u>"] = "list_scroll_up",
+            ["<c-v>"] = "edit_vsplit",
+            ["<c-w>H"] = "layout_left",
+            ["<c-w>J"] = "layout_bottom",
+            ["<c-w>K"] = "layout_top",
+            ["<c-w>L"] = "layout_right",
+            ["?"] = "toggle_help_list",
+            ["G"] = "list_bottom",
+            ["gg"] = "list_top",
+            ["i"] = "focus_input",
+            ["j"] = "list_down",
+            ["k"] = "list_up",
+            ["q"] = "cancel",
+            ["zb"] = "list_scroll_bottom",
+            ["zt"] = "list_scroll_top",
+            ["zz"] = "list_scroll_center",
+          },
+          wo = {
+            conceallevel = 2,
+            concealcursor = "nvc",
+          },
+        },
+        -- preview window
+        preview = {
+          keys = {
+            ["<Esc>"] = "cancel",
+            ["q"] = "cancel",
+            ["i"] = "focus_input",
+            ["<a-w>"] = "cycle_win",
           },
         },
       },
