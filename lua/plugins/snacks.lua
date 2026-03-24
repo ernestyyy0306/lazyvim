@@ -1,5 +1,13 @@
 return {
   "folke/snacks.nvim",
+  init = function()
+    vim.api.nvim_create_autocmd("VimEnter", {
+      callback = function()
+        require("snacks").explorer()
+        vim.cmd("wincmd l")
+      end,
+    })
+  end,
   opts = {
     dashboard = {
       preset = {
@@ -98,6 +106,7 @@ return {
           hidden = true,
           ignored = true,
           regex = false,
+          auto_close = false,
           win = {
             list = {
               keys = {
@@ -169,7 +178,7 @@ return {
           keys = {
             -- to close the picker on ESC instead of going to normal mode,
             -- add the following keymap to your config
-            ["<Esc>"] = { "close", mode = { "n", "i" } },
+            ["<Esc>"] = "cancel",
             ["/"] = "toggle_focus",
             ["<C-Down>"] = { "history_forward", mode = { "i", "n" } },
             ["<C-Up>"] = { "history_back", mode = { "i", "n" } },

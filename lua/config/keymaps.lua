@@ -2,6 +2,7 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 local keymap = vim.keymap.set
+local del = vim.keymap.del
 
 -- Fix Spell checking
 keymap("n", "z0", "1z=", {
@@ -50,3 +51,5 @@ keymap("t", "<C-k>", function()
     vim.opt_local.scrollback = old_scrollback
   end, 10)
 end, { desc = "Clear Terminal Memory (Keep Process)" })
+
+del("n", "<leader>K")
