@@ -6,3 +6,35 @@
 --
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
+--
+local buffer_triggered = false
+
+local function is_explorer_open()
+  local explorers = (require("snacks").picker.get({ source = "explorer" }))
+
+  if #explorers > 0 then
+    return true
+  end
+
+  return false
+end
+
+vim.api.nvim_create_autocmd({ "BufReadPost" }, {
+  callback = function()
+    local win_id = vim.api.nvim_get_current_win()
+
+    if buffer_triggered or is_explorer_open() then
+      return
+    end
+
+    require("snacks").explorer()
+
+    buffer_triggered = true
+
+    vim.defer_fn(function()
+      if vim.api.nvim_win_is_valid(win_id) then
+        vim.api.nvim_set_current_win(win_id)
+      end
+    end, 50)
+  end,
+})

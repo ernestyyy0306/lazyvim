@@ -1,14 +1,5 @@
 return {
   "folke/persistence.nvim",
-  event = "BufReadPre",
-  opts = function(_, opts)
-    vim.api.nvim_create_autocmd("User", {
-      pattern = "PersistenceLoadPost",
-      callback = function()
-        require("snacks").explorer()
-      end,
-    })
-  end,
   -- stylua: ignore
   keys = {
     { "<leader>qs", function() require("persistence").load() end, desc = "Restore Session" },

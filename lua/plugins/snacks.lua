@@ -3,13 +3,23 @@ return {
   init = function()
     vim.api.nvim_create_autocmd("VimEnter", {
       callback = function()
-        require("snacks").explorer()
-        vim.cmd("wincmd l")
+        local win_id = vim.api.nvim_get_current_win()
+        require("snacks").explorer.open()
+        vim.defer_fn(function()
+          if vim.api.nvim_win_is_valid(win_id) then
+            vim.api.nvim_set_current_win(win_id)
+          end
+        end, 250)
       end,
     })
   end,
   opts = {
     dashboard = {
+      styles = {
+        wo = {
+          foldenable = false,
+        },
+      },
       preset = {
         header = [[
        ██╗      █████╗ ███████╗██╗   ██╗██╗   ██╗██╗███╗   ███╗           
