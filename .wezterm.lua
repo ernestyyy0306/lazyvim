@@ -34,6 +34,7 @@ local config = {
   window_background_opacity = 0.99,
 
   keys = {
+    -- <CTRL-SHIFT-E> Rename Tab
     {
       key = "E",
       mods = "CTRL|SHIFT",
@@ -46,11 +47,7 @@ local config = {
         end),
       }),
     },
-    {
-      key = "s",
-      mods = "CMD",
-      action = wezterm.action.SendKey({ key = "s", mods = "CTRL" }),
-    },
+    -- <CMD-W> Close Tab or Neovim buffer
     {
       key = "w",
       mods = "CMD",
@@ -65,14 +62,38 @@ local config = {
         end
       end),
     },
+    -- <CMD-S> Save Neovim buffer
+    {
+      key = "s",
+      mods = "CMD",
+      action = act_cb(function(window, pane)
+        if is_nvim(pane) then
+          return window:perform_action(act.SendString("\x1b\x13\n"), pane)
+        end
+      end),
+    },
+    -- <CMD-SHIFT-D> Split Pane Vertically
     {
       key = "d",
       mods = "CMD|SHIFT",
       action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }),
     },
+    -- <CMD-SHIFT-Z> Undo in Neovim
     {
       key = "z",
       mods = "CMD",
+      action = act_cb(function(window, pane)
+        if is_nvim(pane) then
+          return window:perform_action(
+            act.SendString("\x1bua"), -- leader
+            pane
+          )
+        end
+      end),
+    },
+    {
+      key = "z",
+      mods = "CTRL",
       action = act_cb(function(window, pane)
         if is_nvim(pane) then
           return window:perform_action(
@@ -94,6 +115,7 @@ local config = {
         end
       end),
     },
+    -- <CTRL-SHIFT-K> Clear Scrollback
     {
       key = "K",
       mods = "CTRL|SHIFT",
@@ -117,8 +139,8 @@ local config = {
   },
 }
 
+-- <CTRL+ALT> + number to move to that position
 for i = 1, 8 do
-  -- CTRL+ALT + number to move to that position
   table.insert(config.keys, {
     key = tostring(i),
     mods = "CTRL|CMD",

@@ -1,15 +1,23 @@
+local Explorer = require("utils.explorer")
+
 return {
   "folke/snacks.nvim",
   init = function()
     vim.api.nvim_create_autocmd("VimEnter", {
       callback = function()
+        if vim.fn.argc() > 0 or Explorer.is_explorer_open() then
+          return
+        end
+
         local win_id = vim.api.nvim_get_current_win()
+
         require("snacks").explorer.open()
+
         vim.defer_fn(function()
           if vim.api.nvim_win_is_valid(win_id) then
             vim.api.nvim_set_current_win(win_id)
           end
-        end, 250)
+        end, 350)
       end,
     })
   end,
@@ -39,20 +47,6 @@ return {
       },
     },
     picker = {
-      exclude = { -- add folder names here to exclude
-        ".git",
-        "node_modules",
-        "package-lock.json",
-        "yarn.lock",
-        "dist",
-        ".coverage",
-        "test-suites",
-        "tests",
-        ".turbo",
-        ".expo",
-        "ios",
-        "venv",
-      },
       sources = {
         files = {
           hidden = true,
@@ -69,6 +63,7 @@ return {
             "**/ios/*",
             "**/.expo/*",
             "**/venv/*",
+            "**/output/*",
           },
           layout = {
             fullscreen = true,
@@ -93,6 +88,21 @@ return {
           hidden = true,
           ignored = true,
           regex = false,
+          exclude = {
+            ".git",
+            "node_modules",
+            "package-lock.json",
+            "yarn.lock",
+            "dist",
+            ".coverage",
+            "test-suites",
+            "tests",
+            ".turbo",
+            ".expo",
+            "ios",
+            "venv",
+            "output",
+          },
           layout = {
             fullscreen = true,
             { preview = true },

@@ -53,3 +53,16 @@ keymap("t", "<C-k>", function()
 end, { desc = "Clear Terminal Memory (Keep Process)" })
 
 del("n", "<leader>K")
+
+-- Search and replace
+vim.keymap.set("n", "<leader>sr", function()
+  require("grug-far").open({
+    prefills = {
+      paths = vim.fn.expand("%:p"),
+    },
+  })
+end, { desc = "Grug Search/Replace Current File" })
+
+vim.keymap.set("n", "<leader>sR", function()
+  require("grug-far").open()
+end, { desc = "Grug Search/Replace" })
