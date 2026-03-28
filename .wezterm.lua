@@ -93,18 +93,6 @@ local config = {
     },
     {
       key = "z",
-      mods = "CTRL",
-      action = act_cb(function(window, pane)
-        if is_nvim(pane) then
-          return window:perform_action(
-            act.SendString("\x1bua"), -- leader
-            pane
-          )
-        end
-      end),
-    },
-    {
-      key = "z",
       mods = "CMD|SHIFT",
       action = act_cb(function(window, pane)
         if is_nvim(pane) then

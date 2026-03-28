@@ -6,4 +6,4 @@ local opt = vim.opt
 opt.wrap = true -- enable line wrapping
 opt.linebreak = true -- wrap on word boundaries
 opt.fixeol = false -- do not add a newline at the end of the file
-opt.fixendofline = false -- do not add a newline at the end of the file
+opt.fixendofline = false -- do not add a newlin
