@@ -30,3 +30,20 @@ vim.api.nvim_create_autocmd({ "BufReadPost" }, {
     end, 450)
   end,
 })
+
+vim.api.nvim_create_autocmd("BufDelete", {
+  pattern = "*",
+  callback = function()
+    if Explorer.is_explorer_open() then
+      vim.schedule(function()
+        vim.cmd("wincmd h")
+      end)
+      vim.schedule(function()
+        vim.api.nvim_input("Z")
+      end)
+      vim.schedule(function()
+        vim.cmd("wincmd l")
+      end)
+    end
+  end,
+})
