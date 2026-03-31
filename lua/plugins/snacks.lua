@@ -17,7 +17,7 @@ return {
           if vim.api.nvim_win_is_valid(win_id) then
             vim.api.nvim_set_current_win(win_id)
           end
-        end, 350)
+        end, 500)
       end,
     })
   end,
