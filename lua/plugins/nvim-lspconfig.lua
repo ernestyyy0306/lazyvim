@@ -15,9 +15,7 @@ return {
       eslint = {
         settings = {
           workingDirectories = { mode = "auto" },
-          experimental = {
-            useFlatConfig = false,
-          },
+          useFlatConfig = false,
         },
       },
       vtsls = {

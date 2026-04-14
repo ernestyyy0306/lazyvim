@@ -64,6 +64,8 @@ return {
             "**/.expo/*",
             "**/venv/*",
             "**/output/*",
+            "**/logs/*",
+            "**/target/*",
           },
           layout = {
             fullscreen = true,
@@ -102,6 +104,8 @@ return {
             "ios",
             "venv",
             "output",
+            "logs",
+            "target",
           },
           layout = {
             fullscreen = true,
