@@ -66,6 +66,8 @@ return {
             "**/output/*",
             "**/logs/*",
             "**/target/*",
+            "**/.next/*",
+            "**/.turbo/*",
           },
           layout = {
             fullscreen = true,
@@ -106,6 +108,8 @@ return {
             "output",
             "logs",
             "target",
+            ".next",
+            "pnpm-lock.yaml",
           },
           layout = {
             fullscreen = true,
