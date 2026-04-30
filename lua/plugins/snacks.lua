@@ -1,5 +1,89 @@
 local Explorer = require("utils.explorer")
 
+-- Open picker.select to search for a directory to search in
+local grep_directory = function()
+  local snacks = require("snacks")
+  local has_fd = vim.fn.executable("fd") == 1
+  local cwd = vim.fn.getcwd()
+
+  local function show_picker(dirs)
+    if #dirs == 0 then
+      vim.notify("No directories found", vim.log.levels.WARN)
+      return
+    end
+
+    local items = {}
+    for i, item in ipairs(dirs) do
+      table.insert(items, {
+        idx = i,
+        file = item,
+        text = item,
+      })
+    end
+
+    snacks.picker({
+      confirm = function(picker, item)
+        picker:close()
+        snacks.picker.grep({
+          dirs = { item.file },
+        })
+      end,
+      items = items,
+      format = function(item, _)
+        local file = item.file
+        local ret = {}
+        local a = Snacks.picker.util.align
+        local icon, icon_hl = Snacks.util.icon(file.ft, "directory")
+        ret[#ret + 1] = { a(icon, 3), icon_hl }
+        ret[#ret + 1] = { " " }
+        local path = file:gsub("^" .. vim.pesc(cwd) .. "/", "")
+        ret[#ret + 1] = { a(path, 20), "Directory" }
+
+        return ret
+      end,
+      layout = {
+        preview = false,
+        preset = "vertical",
+      },
+      title = "Grep in directory",
+    })
+  end
+
+  if has_fd then
+    local cmd = { "fd", "--type", "directory", "--hidden", "--no-ignore-vcs", "--exclude", ".git" }
+    local dirs = {}
+
+    vim.fn.jobstart(cmd, {
+      on_stdout = function(_, data, _)
+        for _, line in ipairs(data) do
+          if line and line ~= "" then
+            table.insert(dirs, line)
+          end
+        end
+      end,
+      on_exit = function(_, code, _)
+        if code == 0 then
+          show_picker(dirs)
+        else
+          -- Fallback to plenary if fd fails
+          local fallback_dirs = require("plenary.scandir").scan_dir(cwd, {
+            only_dirs = true,
+            respect_gitignore = true,
+          })
+          show_picker(fallback_dirs)
+        end
+      end,
+    })
+  else
+    -- Use plenary if fd is not available
+    local dirs = require("plenary.scandir").scan_dir(cwd, {
+      only_dirs = true,
+      respect_gitignore = true,
+    })
+    show_picker(dirs)
+  end
+end
+
 return {
   "folke/snacks.nvim",
   init = function()
@@ -325,4 +409,26 @@ return {
       },
     },
   },
+  keys = (function()
+    local snacks = require("snacks")
+    local picker = snacks.picker
+
+    return {
+      -- files
+      { "<leader><space>", picker.smart, desc = "Files" },
+      { "<leader>,", picker.buffers, desc = "Buffers" },
+
+      -- search
+      { "<leader>/", picker.grep, desc = "Search: Workspace" },
+      { "<leader>?", grep_directory, desc = "Search: Directory" },
+      { "<leader>g/", picker.grep_word, desc = "Search: Current word" },
+
+      -- current state
+      { "<leader>'", picker.marks, desc = "Marks" },
+      { "<leader>.", picker.resume, desc = "Last picker" },
+      { "<leader>;", picker.jumps, desc = "Jumps" },
+      { "<leader>u", picker.undo, desc = "Command history" },
+      { '<leader>"', picker.registers, desc = "Registers" },
+    }
+  end)(),
 }
