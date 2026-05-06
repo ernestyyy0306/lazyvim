@@ -1,6 +1,6 @@
 return {
   "coder/claudecode.nvim",
-  enabled = false,
+  enabled = true,
   dependencies = { "folke/snacks.nvim" },
   config = true,
   opts = {
@@ -9,10 +9,16 @@ return {
       ---@type snacks.win.Config|{}
       snacks_win_opts = {
         position = "right",
-        width = 0.3,
+        width = 0.4,
         height = 1.0,
         border = "rounded",
       },
+    },
+    diff_opts = {
+      layout = "horizontal",
+      open_in_new_tab = false,
+      keep_terminal_focus = true,
+      hide_terminal_in_new_tab = false,
     },
   },
   keys = {
