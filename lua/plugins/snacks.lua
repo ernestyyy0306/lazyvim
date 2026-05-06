@@ -408,6 +408,20 @@ return {
         },
       },
     },
+    terminal = {
+      win = {
+        position = "right",
+        width = 0.4,
+        height = 0,
+      },
+    },
+    lazygit = {
+      win = {
+        position = "float",
+        width = 0,
+        height = 0,
+      },
+    },
   },
   keys = (function()
     local snacks = require("snacks")
@@ -429,6 +443,9 @@ return {
       { "<leader>;", picker.jumps, desc = "Jumps" },
       { "<leader>u", picker.undo, desc = "Command history" },
       { '<leader>"', picker.registers, desc = "Registers" },
+
+      -- terminal
+      { "<C-/>", function() snacks.terminal.toggle() end, mode = { "n", "t" }, desc = "Toggle Terminal" },
     }
   end)(),
 }
