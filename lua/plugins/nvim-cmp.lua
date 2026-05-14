@@ -1,6 +1,7 @@
 return {
   {
     "hrsh7th/nvim-cmp",
+    dependencies = { "supermaven-inc/supermaven-nvim" },
     opts = function(_, opts)
       local cmp = require("cmp")
 
@@ -21,6 +22,22 @@ return {
           end
         end, { "i", "s" }),
       })
+
+      opts.sources = cmp.config.sources(vim.list_extend(opts.sources or {}, {
+        { name = "supermaven", group_index = 1, priority = 100 },
+      }))
+
+      opts.formatting = opts.formatting or {}
+      local prev_format = opts.formatting.format
+      opts.formatting.format = function(entry, vim_item)
+        if prev_format then
+          vim_item = prev_format(entry, vim_item)
+        end
+        if entry.source.name == "supermaven" then
+          vim_item.kind = "󰚩 Supermaven"
+        end
+        return vim_item
+      end
     end,
   },
   { "hrsh7th/cmp-nvim-lsp" },

@@ -429,7 +429,6 @@ return {
 
     return {
       -- files
-      { "<leader><space>", picker.smart, desc = "Files" },
       { "<leader>,", picker.buffers, desc = "Buffers" },
 
       -- search
@@ -445,7 +444,14 @@ return {
       { '<leader>"', picker.registers, desc = "Registers" },
 
       -- terminal
-      { "<C-/>", function() snacks.terminal.toggle() end, mode = { "n", "t" }, desc = "Toggle Terminal" },
+      {
+        "<C-/>",
+        function()
+          snacks.terminal.toggle()
+        end,
+        mode = { "n", "t" },
+        desc = "Toggle Terminal",
+      },
     }
   end)(),
 }
